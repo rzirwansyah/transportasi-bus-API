@@ -1,5 +1,29 @@
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import env from '../../env';
+
+/**
+ *  metode hashing pass
+ *  @param { string } password
+ *  @returns { string } return hashed pass
+ */
+
+const saltRound = 10;
+const salt = bcrypt.genSaltSync(saltRound);
+const hashPassword = password => bcrypt.hashSync(password, salt);
+
+/**
+ * perbandingan password
+ * @param { string } hashPassword
+ * @param { string } password
+ * @returns { Boolean  return True or False}
+ */
+
+const comparePassword = (hashedPassword, password) => {
+
+    return bcrypt.compareSync(password, hashedPassword);
+
+};
 
 /**
  * isValidEmail metode
@@ -22,9 +46,7 @@ const isValidEmail = (email) => {
 
 const validatePassword = (password) => {
 
-    if (password.length <= 8 || password === '') {
-        return false;
-    } return true;
+    return !(password.length <= 8 || password === '');
 
 };
 
@@ -39,9 +61,7 @@ const isEmpty = (input) => {
     if (input === undefined || input === '') {
         return true
     }
-    if (input.replace(/\s/g, '').length) {
-        return false;
-    } return true;
+    return !input.replace(/\s/g, '').length;
 
 };
 
@@ -81,6 +101,8 @@ const generateUserToken = (email, id, is_admin, first_name, last_name) => {
 
 export {
 
+    hashPassword,
+    comparePassword,
     isValidEmail,
     validatePassword,
     isEmpty,
